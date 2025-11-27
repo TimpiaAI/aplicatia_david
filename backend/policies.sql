@@ -13,6 +13,7 @@ alter table public.meal_plans enable row level security;
 alter table public.meal_plan_items enable row level security;
 alter table public.shopping_lists enable row level security;
 alter table public.shopping_list_items enable row level security;
+alter table storage.objects enable row level security;
 
 -- Profiles
 create policy "profiles are public" on public.profiles
@@ -140,4 +141,3 @@ create policy "owner can update recipe images" on storage.objects
   for update using (bucket_id = 'recipe-images' and auth.uid() = owner) with check (bucket_id = 'recipe-images' and auth.uid() = owner);
 create policy "owner can delete recipe images" on storage.objects
   for delete using (bucket_id = 'recipe-images' and auth.uid() = owner);
-

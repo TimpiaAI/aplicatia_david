@@ -118,7 +118,12 @@ create table if not exists public.meal_plans (
   updated_at timestamptz default now()
 );
 
-create type public.meal_type as enum ('breakfast','lunch','dinner','snack');
+do $$
+begin
+  if not exists (select 1 from pg_type where typname = 'meal_type') then
+    create type public.meal_type as enum ('breakfast','lunch','dinner','snack');
+  end if;
+end$$;
 
 create table if not exists public.meal_plan_items (
   id uuid primary key default gen_random_uuid(),
@@ -258,6 +263,9 @@ as $$
 declare
   liked boolean;
 begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
   if exists(select 1 from public.likes where recipe_id = p_recipe_id and user_id = auth.uid()) then
     delete from public.likes where recipe_id = p_recipe_id and user_id = auth.uid();
     liked := false;
@@ -279,6 +287,9 @@ as $$
 declare
   saved boolean;
 begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
   if exists(select 1 from public.saves where recipe_id = p_recipe_id and user_id = auth.uid()) then
     delete from public.saves where recipe_id = p_recipe_id and user_id = auth.uid();
     saved := false;
@@ -301,6 +312,9 @@ declare
   new_id uuid := gen_random_uuid();
   owner uuid;
 begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
   select user_id into owner from public.meal_plans where id = p_meal_plan_id;
   if owner is null then
     raise exception 'meal plan not found';
@@ -352,8 +366,7 @@ as $$
   left join (
     select recipe_id, count(*) from public.likes group by recipe_id
   ) as like_counts on like_counts.recipe_id = r.id
-  where r.is_public = true and r.author_id <> auth.uid()
+  where r.is_public = true and (auth.uid() is null or r.author_id <> auth.uid())
   order by like_count desc nulls last, r.created_at desc
   limit limit_count;
 $$;
-
