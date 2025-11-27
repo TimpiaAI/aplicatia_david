@@ -165,7 +165,7 @@ export default function RecipeFeed({ session, onRecipesLoaded, refreshToken }: P
               <div>
                 <div style={{ fontWeight: 700, fontSize: 18 }}>{recipe.title}</div>
                 <div className="muted" style={{ fontSize: 13 }}>
-                  {recipe.author_username ?? "Unknown"} • {formatDistanceToNow(new Date(recipe.created_at))} ago
+                  {recipe.author_username ?? "Unknown"} · {formatDistanceToNow(new Date(recipe.created_at))} ago
                 </div>
               </div>
               {recipe.cuisine && <span className="badge">{recipe.cuisine}</span>}
@@ -181,9 +181,9 @@ export default function RecipeFeed({ session, onRecipesLoaded, refreshToken }: P
             )}
             {recipe.description && <p className="muted">{recipe.description}</p>}
             <div className="action-row">
-              <span className="pill">⏱ {recipe.total_time ?? 0} mins</span>
-              <span className="pill">❤️ {recipe.like_count}</span>
-              <span className="pill">💬 {recipe.comment_count}</span>
+              <span className="pill">Time {recipe.total_time ?? 0} mins</span>
+              <span className="pill">Likes {recipe.like_count}</span>
+              <span className="pill">Comments {recipe.comment_count}</span>
             </div>
             <div className="action-row">
               <button className="secondary" onClick={() => toggleLike(recipe.recipe_id)}>
@@ -199,9 +199,9 @@ export default function RecipeFeed({ session, onRecipesLoaded, refreshToken }: P
               </div>
               <div className="stack">
                 {(comments[recipe.recipe_id] ?? []).slice(0, 3).map((c) => (
-                  <div key={c.id} className="card" style={{ background: "#f8fafc" }}>
+                  <div key={c.id} className="card" style={{ background: "rgba(255, 255, 255, 0.04)" }}>
                     <div style={{ fontWeight: 700, fontSize: 13 }}>
-                      {c.profiles?.username ?? "Someone"} •{" "}
+                      {c.profiles?.username ?? "Someone"} ·{" "}
                       <span className="muted">{formatDistanceToNow(new Date(c.created_at))} ago</span>
                     </div>
                     <div>{c.content}</div>

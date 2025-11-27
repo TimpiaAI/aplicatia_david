@@ -136,7 +136,7 @@ export default function MealPlanner({ session, availableRecipes, onPlansChange }
   };
 
   const planChoices = useMemo(
-    () => plans.map((p) => ({ label: `${p.title} (${p.start_date} → ${p.end_date})`, value: p.id })),
+    () => plans.map((p) => ({ label: `${p.title} (${p.start_date} -> ${p.end_date})`, value: p.id })),
     [plans]
   );
 
@@ -199,12 +199,16 @@ export default function MealPlanner({ session, availableRecipes, onPlansChange }
               <div className="section-heading">
                 <span>{plan.title}</span>
                 <span className="muted">
-                  {format(new Date(plan.start_date), "MMM d")} → {format(new Date(plan.end_date), "MMM d")}
+                  {format(new Date(plan.start_date), "MMM d")} -> {format(new Date(plan.end_date), "MMM d")}
                 </span>
               </div>
               {Object.keys(grouped).length === 0 && <div className="muted">No meals scheduled yet.</div>}
               {Object.entries(grouped).map(([date, meals]) => (
-                <div key={date} className="stack" style={{ background: "#f8fafc", padding: 10, borderRadius: 12 }}>
+                <div
+                  key={date}
+                  className="stack"
+                  style={{ background: "rgba(255, 255, 255, 0.04)", padding: 10, borderRadius: 12 }}
+                >
                   <div style={{ fontWeight: 700 }}>{format(new Date(date), "EEE, MMM d")}</div>
                   {meals.map((m) => (
                     <div key={m.id} className="action-row">
